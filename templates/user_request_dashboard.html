@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Request Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        a {
+            text-decoration: none;
+            background-color: #3498db;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: inline-block;
+            margin-top: 20px;
+        }
+
+        a:hover {
+            background-color: #2684f5;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+        table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>User Request Dashboard</h1>
+        
+        <h2>Past Requests</h2>
+
+         <table border = bold :1>
+            <thead>
+                <tr>
+                    <th>Location</th>
+                    <th>Request Type</th>
+                    <th>Service Provider ID</th>
+                    <th>Date and Time</th>
+                   
+                </tr>
+            </thead>
+            <tbody>
+                 {% for request in past_requests %}
+                <tr>
+                    <td>{{ request[2] }}</td>
+                    <td>{{ request[3] }}</td>
+                    <td>{{ request[5] }}</td>
+                    <td>{{ request[6] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+       
+        <a href="/user_dashboard">Back to User Dashboard</a>
+    </div>
+    <script>
+        function viewAcceptedProviders(requestId) {
+            // Send an AJAX request to get the accepted service providers for the selected request
+            fetch("/get_accepted_providers?request_id=" + requestId)
+                .then(response => response.json())
+                .then(data => {
+                    displayAcceptedProviders(data);
+                })
+                .catch(error => {
+                    console.error("Error fetching accepted providers: " + error);
+                });
+        }
+
+        function displayAcceptedProviders(data) {
+            const acceptedProviders = data.accepted_providers;
+            const acceptedProvidersList = document.getElementById("accepted-providers").querySelector("ul");
+            acceptedProvidersList.innerHTML = ""; // Clear previous entries
+
+            acceptedProviders.forEach(provider => {
+                const listItem = document.createElement("li");
+                listItem.innerHTML = `
+                    ${provider.user_name}
+                    <button onclick="confirmServiceProvider(${provider.id}, ${data.request_id})">Confirm</button>
+                `;
+                acceptedProvidersList.appendChild(listItem);
+            });
+        }
+
+        function confirmServiceProvider(providerId, requestId) {
+            // Send an AJAX request to confirm the selected service provider
+            fetch("/confirm_service_provider", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    request_id: requestId,
+                    service_provider_id: providerId
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Update the UI as needed, e.g., remove the confirmed provider
+                        // Optionally, you can reload the accepted providers list
+                        viewAcceptedProviders(requestId);
+                    } else {
+                        alert("Failed to confirm the service provider.");
+                    }
+                })
+                .catch(error => {
+                    console.error("Error confirming service provider: " + error);
+                });
+        }
+    </script>
+
+</body>
+</html>

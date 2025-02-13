@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            margin-top: 50px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #3498db;
+            margin-bottom: 20px;
+        }
+
+        .profile {
+            margin-bottom: 20px;
+        }
+
+        .profile img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 20px auto;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .profile h2 {
+            font-size: 1.5rem;
+            color: #333;
+            margin: 10px 0;
+        }
+
+        .profile p {
+            font-size: 1rem;
+            color: #555;
+            margin: 5px 0;
+        }
+
+        .edit-profile,
+        .help-button,
+        .logout-button,
+        .current-request-button {
+            margin-top: 20px;
+        }
+
+        .edit-profile a,
+        .help-button button,
+        .logout-button a,
+        .current-request-button button {
+            text-decoration: none;
+            padding: 12px 24px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: inline-block;
+            margin: 0 10px;
+        }
+
+        .edit-profile a {
+            background: linear-gradient(135deg, #3498db, #0c95b1);
+            color: #fff;
+        }
+
+        .help-button button {
+            background: linear-gradient(135deg, #27ae60, #21935e);
+            color: #fff;
+        }
+
+        .logout-button a {
+            background: linear-gradient(135deg, #e74c3c, #d63022);
+            color: #fff;
+        }
+
+        .current-request-button button {
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            color: #fff;
+        }
+
+        .edit-profile a:hover,
+        .help-button button:hover,
+        .logout-button a:hover,
+        .current-request-button button:hover {
+            filter: brightness(1.2);
+        }
+
+
+         
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>User Dashboard</h1>
+        <div class="profile"> 
+            <img src="data:image/jpg;base64,{{ encoded_image }}" alt="User Profile Picture">
+            <h2>{{ user['username'] }}</h2>
+            <p>Username: {{ user['username'] }}</p>
+            <p>Email: {{ user['email'] }}</p>
+            <p>Full Name: {{ user['full_name'] }}</p>
+            <p>Phone Number: {{ user['phone_number'] }}</p>
+        </div>
+        <div class="edit-profile">
+               <a href="/user_editprofile/{{ user['id'] }}">Edit Profile</a>
+        </div>
+        <div class="help-button">
+            <button onclick="redirectToHelpRequest()">Request Emergency Help</button>
+        </div>
+        <div class="logout-button">
+            <a href="/logout">Logout</a>
+        </div>
+        <div class="help-button">
+            <button onclick="viewRequests()">View Requests</button>
+            <div class="current-request-button">
+                <button onclick="viewCurrentRequestDetails()">View Current Request Details</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function redirectToHelpRequest() {
+            window.location.href = '/request_help_form';
+        }
+
+        function viewRequests() {
+            window.location.href = '/user_request_dashboard';
+        }
+
+        function viewCurrentRequestDetails() {
+            window.location.href = '/current_request_details';
+        }
+    </script>
+</body>
+
+</html>

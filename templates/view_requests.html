@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pending Requests</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            max-width: 600px;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        .request-card {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 10px 0;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .request-card p {
+            margin: 10px 0;
+            font-size: 1.2rem;
+            color: #333;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+        }
+
+        .accept-button, .reject-button {
+            background-color: #3498db;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 0 10px;
+        }
+
+        .accept-button:hover {
+            background-color: #2684f5;
+        }
+
+        .reject-button:hover {
+            background-color: #e74c3c;
+        }
+        a {
+            text-decoration: none;
+            background-color: #3498db;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: inline-block;
+            margin-top: 20px;
+        }
+
+        a:hover {
+            background-color: #2684f5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Pending Requests</h1>
+        {% for request in requests %}
+            <div class="request-card">
+                <p>Location: {{ request[2] }}</p>
+                <p>Help Type: {{ request[3] }}</p>
+                <div class="button-container">
+                    <form method="POST" action="/accept_request/{{ request[0] }}/{{ provider_type }}/{{provider_id}}">
+                        <button class="accept-button" type="submit" name="accept" value="1">Accept</button>
+                        <button class="reject-button" type="submit" name="accept" value="0">Reject</button>
+                    </form>
+                </div>
+            </div>
+        {% endfor %}
+        <a href="/service_provider_dashboard">Back to Service Provider Dashboard</a>
+    </div>
+</body>
+</html>

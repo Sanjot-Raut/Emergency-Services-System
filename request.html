@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request Assistance</title>
+    <!-- Include your CSS links here -->
+</head>
+
+<body>
+    <header>
+        <!-- Include your navigation bar here -->
+    </header>
+
+    <section id="request-assistance">
+        <div class="container">
+            <h2>Request Assistance</h2>
+            <form id="assistance-form" method="POST" action="/submit-assistance">
+                <label for="name">Your Name</label>
+                <input type="text" id="name" name="name" required>
+
+                <label for="contact">Contact Number</label>
+                <input type="tel" id="contact" name="contact" required>
+
+                <label for="assistance-type">Type of Assistance</label>
+                <select id="assistance-type" name="assistance-type" required>
+                    <option value="fuel">Fuel</option>
+                    <option value="mechanic">Mechanic</option>
+                    <option value="doctor">Doctor</option>
+                </select>
+
+                <button type="submit">Submit Request</button>
+            </form>
+        </div>
+    </section>
+
+    <footer>
+        <!-- Include your footer content here -->
+    </footer>
+</body>
+
+</html>

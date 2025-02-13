@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Emergency Services System</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 450px;
+            margin: 0 auto;
+            padding: 40px;
+            text-align: center;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            margin-top: 40px;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        label {
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 15px;
+            text-align: center;
+            cursor: pointer;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        label.selected {
+            background-color: #ff6b6b;
+            color: #fff;
+        }
+
+        input[type="hidden"] {
+            display: none;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="submit"] {
+            background: linear-gradient(135deg, #ff6b6b, #ffa07a);
+            color: #fff;
+            border: none;
+            padding: 15px 25px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        input[type="submit"]:hover {    
+            background: linear-gradient(135deg, #ff5a5a, #ff8c75);
+        }
+
+        footer {
+            margin-top: 20px;
+            text-align: center;
+            color: #777;
+        }
+
+        footer p {
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Login</h1>
+        </header>
+        <form action="/login" method="post">
+            <div>
+            <label for="user" class="selected" id="userLabel">User</label>
+            <label for="serviceProvider" id="serviceProviderLabel">Service Provider</label>
+            <input type="hidden" id="loginType" name="loginType" value="user">
+            </div>
+           
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" required>
+            
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+            
+            <input type="submit" value="Login">
+        </form>
+        <footer>
+            <p>&copy; 2023 Emergency Services System</p>
+        </footer>
+    </div>
+    <script>
+        const userLabel = document.getElementById("userLabel");
+        const serviceProviderLabel = document.getElementById("serviceProviderLabel");
+        const loginType = document.getElementById("loginType");
+
+        userLabel.addEventListener("click", () => {
+            userLabel.classList.add("selected");
+            serviceProviderLabel.classList.remove("selected");
+            loginType.value = "user";
+        });
+
+        serviceProviderLabel.addEventListener("click", () => {
+            serviceProviderLabel.classList.add("selected");
+            userLabel.classList.remove("selected");
+            loginType.value = "service_provider";
+        });
+    </script>
+</body>
+</html>

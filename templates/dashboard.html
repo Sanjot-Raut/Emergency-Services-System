@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        /* Add your CSS styles here */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            margin-top: 50px;
+        }
+        h1 {
+            color: #333;
+        }
+        .content {
+            padding: 20px;
+        }
+        .user-content {
+            background-color: #d6e2f0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .service-provider-content {
+            background-color: #ffebcc;
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Dashboard</h1>
+        <div class="content">
+            {% if user_type == 'user' %}
+                <div class="user-content">
+                    <h2>Welcome, {{ user.name }} (User)</h2>
+                    <p>Email: {{ user.email }}</p>
+                    <h3>Your Requests:</h3>
+                    <ul>
+                        {% for request in user.requests %}
+                            <li>{{ request }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% elif user_type == 'service_provider' %}
+                <div class="service-provider-content">
+                    <h2>Welcome, {{ user.name }} (Service Provider)</h2>
+                    <p>Email: {{ user.email }}</p>
+                    <h3>Your Services:</h3>
+                    <ul>
+                        {% for service in user.services %}
+                            <li>{{ service }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% else %}
+                <p>Invalid user type.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

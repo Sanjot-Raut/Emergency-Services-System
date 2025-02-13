@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Current Request Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            margin-top: 50px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #333;
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            color: #333;
+        }
+
+        .user-profile, .current-request, .accepted-providers {
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+
+        .user-profile p, .current-request p {
+            font-size: 1rem;
+            color: #777;
+        }
+
+        .current-request p {
+            margin: 10px 0;
+        }
+
+        .accepted-providers li {
+            list-style-type: none;
+            margin: 10px 0;
+            padding: 10px 0;
+            border-bottom: 1px solid #ccc;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .accepted-providers button {
+            background: linear-gradient(135deg, #0099cc, #00cc99);
+            color: #fff;
+            padding: 5px 10px;
+            font-weight: bold;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        a {
+            text-decoration: none;
+            background-color: #3498db;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: inline-block;
+            margin-top: 20px;
+        }
+
+        a:hover {
+            background-color: #2684f5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>User Current Request Details</h1>
+        <div class="user-profile">
+            <h2>User Profile</h2>
+            <p>Username: {{ user[0][1]}}</p>
+            <p>Email: {{ user[0][3] }}</p>
+        </div>
+        
+        <div class="current-request">
+            <h2>Current Request Details</h2>
+            <p>Location: {{ request.location }}</p>
+            <p>Help Type: {{ request.help_type }}</p>
+            <p>Status: {{ request.status }}</p>
+        </div>
+
+        <div class="accepted-providers">
+            <h2>Accepted Service Providers</h2>
+            <ul>
+                <form method="POST" action="{{ url_for('confirm_service_provider') }}">
+                    <input type="hidden" name="request_id" value="{{ request.id }}">
+                    <ul>
+                        {% for provider in accepted_providers %}
+                            <li>
+                                <div>{{ provider.user_name }}</div>
+                                <div>{{ provider.location}}</div>
+                                <div>{{ provider.rating_points}}</div>
+                                <div><button type="submit" name="provider_id" value="{{ provider.id }}">Confirm</button></div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </form>
+            </ul>
+        </div>
+         <a href="/user_dashboard">Back to User Dashboard</a>
+    </div>
+
+    <script>
+        function confirmServiceProvider(providerId) {
+            // You can use JavaScript's Fetch API to send an AJAX request to your server
+            fetch(`/confirm_service_provider/${providerId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then((response) => {
+                if (response.status === 200) {
+                    // The confirmation was successful; you can update the UI as needed
+                    alert('Service provider confirmed successfully.');
+                } else {
+                    // Handle the case where confirmation failed
+                    alert('Service provider confirmation failed.');
+                }
+            })
+            .catch((error) => {
+                console.error('Error confirming service provider:', error);
+                alert('An error occurred while confirming the service provider.');
+            });
+        }
+    </script>
+</body>
+</html>

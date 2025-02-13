@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Provider Details</title>
+    <!-- Add your CSS links here -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <style>
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 800px;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    margin-top: 20px;
+}
+
+h1 {
+    font-size: 2.5rem;
+    color: #333;
+}
+
+h2 {
+    font-size: 1.8rem;
+    color: #333;
+}
+
+p {
+    font-size: 1rem;
+    color: #555;
+    margin: 10px 0;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 10px auto;
+}
+
+#map {
+    height: 600px;
+    margin: 20px 0;
+}
+  #confirmHelpButton {
+            background-color: #3498db;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #confirmHelpButton:hover {
+            background-color: #2980b9;
+        }
+        #sr {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <!-- Add Leaflet CSS and JS from CDN -->
+
+   <div>
+        <div class="container">
+        <h1>Service Provider Details</h1>
+
+        
+        <p>Provider Type: {{ service_provider[0].provider_type }}</p>
+        <p>User Name: {{ service_provider[0].user_name }}</p>
+        <p>Email: {{ service_provider[0].email }}</p>
+        <p>Contact Number: {{ service_provider[0].contact_number }}</p>
+        <p>License Document Path: {{ service_provider[0].license_document_path }}</p>
+        <p>Location: {{ service_provider[0].location }}</p>
+
+        <h2>Service Provider Profile Picture</h2>
+        <img id=sr src="data:image/jpg;base64,{{ image }}" alt="Service Provider Profile Picture">
+    </div>
+        <!-- You can embed a Google Map using an iframe, replacing the placeholder with actual map embed code. -->
+        <div id="map" style="height: 400px;"></div>
+
+    
+    <button id="confirmHelpButton" onclick="confirmHelp()">Confirm Help Received</button>
+    </div>
+    <script>
+    // Initialize the map
+    var coordinatesString="{{ service_provider[0].location }}"
+      
+
+        // Use regular expression to extract coordinates
+        var regex = /Latitude: (\d+\.\d+), Longitude: (\d+\.\d+)/;
+        var match = coordinatesString.match(regex);
+
+        // Check if there's a match
+        if (match) {
+            // Extracted coordinates
+            var latitude = match[1];
+            var longitude = match[2];
+
+            // Display coordinates
+            console.log("Latitude:", latitude);
+            console.log("Longitude:", longitude);
+        } else {
+            console.log("No coordinates found in the string.");
+        }
+
+    var map = L.map('map').setView([latitude, longitude], 15);
+
+    // Add a tile layer (you can use other map providers, e.g., Mapbox)
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    // Add a marker to the map
+    L.marker([latitude, longitude]).addTo(map)
+        .bindPopup('Service Provider Location')
+        .openPopup();
+
+          function confirmHelp() {
+        // Redirect to the feedback page
+        var userId = "{{ userid }}";
+        var requestId = "{{requestid}}";
+        var serviceProviderId ="{{ service_provider[0].id }}";
+        var url = '/feedback?userid=' + userId + '&requestid=' + requestId + '&serviceproviderid=' + serviceProviderId;
+        console.log(url)
+        window.location.href = url;  // Replace '/feedback-page-url' with the actual URL of your feedback page
+    }
+</script>
+
+</body>
+</html>

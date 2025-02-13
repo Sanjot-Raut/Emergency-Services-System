@@ -1,0 +1,12 @@
+<!-- Loop through accepted service providers and display them -->
+{% for provider in providers %}
+    <div>
+        <p>Service Provider: {{ provider.service_provider.name }}</p>
+        <!-- Add a form for the user to select a service provider and confirm -->
+        <form method="POST" action="/confirm_request">
+            <input type="hidden" name="request_id" value="{{ provider.request_id }}">
+            <input type="hidden" name="service_provider_id" value="{{ provider.service_provider_id }}">
+            <button type="submit">Confirm</button>
+        </form>
+    </div>
+{% endfor %}

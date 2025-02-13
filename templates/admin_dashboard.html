@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css">
+
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 920px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        button {
+            padding: 8px 12px;
+            cursor: pointer;
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        .logout-btn {
+            background-color: #e74c3c;
+        }
+
+        .logout-btn:hover {
+            background-color: #c0392b;
+        }
+
+        /* New styles for report generation section */
+        #report-section {
+            margin-top: 30px;
+            border-top: 1px solid #ddd;
+            padding-top: 20px;
+        }
+
+        #report-form {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        #report-result {
+            font-size: 1.2rem;
+            color: #333;
+        }
+
+        .report-container {
+            margin-top: 20px;
+        }
+
+        .report-entry {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fff;
+        }
+
+        #reportTable {
+            width: 100%;
+        }
+
+        .print-button {
+            margin-top: 10px;
+            padding: 8px 12px;
+        }
+
+        .view-button {
+            cursor: pointer;
+            color: #3498db;
+            text-decoration: underline;
+        }
+
+        /* Popup styles */
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            border: 1px solid #ddd;
+            background-color: #fff;
+            z-index: 1000;
+        }
+
+        .close-popup {
+            cursor: pointer;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 18px;
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Admin Dashboard</h1>
+
+        <!-- Display a list of all registered service providers -->
+        <h2>All Registered Service Providers</h2>
+        <table id="providerTable" class="display">
+            <thead>
+                <tr>
+                    <th>User Name</th>
+                    <th>Provider Type</th>
+                    <th>Email</th>
+                    <th>Contact Number</th>
+                    <th>Location</th>
+                    <th>License</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for provider in all_providers %}
+                <tr>
+                    <td>{{ provider.user_name }}</td>
+                    <td>{{ provider.provider_type }}</td>
+                    <td>{{ provider.email }}</td>
+                    <td>{{ provider.contact_number }}</td>
+                    <td>{{ provider.location }}</td>
+                    <td>
+                        <a href="{{ url_for('view_license', filename=provider.license_document_path) }}" target="_blank">View License</a>
+                    </td>
+                    <td>
+                        {% if provider.status %}
+                            <span style="color: green;">Active</span>
+                        {% else %}
+                            <span style="color: red;">Inactive</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if provider.status %}
+                            <button onclick="deactivateServiceProvider({{ provider.id }})">Deactivate</button>
+                        {% else %}
+                            <button onclick="activateServiceProvider({{ provider.id }})">Activate</button>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <button class="logout-btn" onclick="logout()">Logout</button>
+
+        <!-- Report generation section -->
+        <div id="report-section">
+            <h2>Report Generation</h2>
+            <div id="report-form">
+                <label for="start-date">Start Date:</label>
+                <input type="date" id="start-date" name="start-date" required>
+
+                <label for="end-date">End Date:</label>
+                <input type="date" id="end-date" name="end-date" required>
+
+                <button class="print-button" onclick="generateReport()">Generate Report</button>
+            </div>
+
+            <!-- Display the generated report here -->
+            <div class="report-container">
+                <h2>Reports</h2>
+                <button class="print-button" onclick="printReport()">Print Report</button>
+                <table id="reportTable" class="display">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>User ID</th>
+                            <th>Service Provider ID</th>
+                            <th>Location</th>
+                            <th>Help Type</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="reportBody"></tbody>
+                </table>
+            </div>
+
+            <!-- Popup for detailed request view -->
+            <div id="popup" class="popup">
+                <span class="close-popup" onclick="closePopup()">&times;</span>
+                <div id="popupContent"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add your JavaScript links here -->
+      <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.print.min.js"></script>
+
+    <script>
+        // Your existing JavaScript code
+
+       
+
+        function activateServiceProvider(providerId) {
+            // Send an AJAX request to your server to activate the provider's account
+            fetch(`/activate_service_provider/${providerId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update the UI, e.g., change the button to Deactivate
+                    alert('Service provider activated successfully.');
+                    // Optionally, you can reload the list of all providers
+                    // window.location.reload();
+                } else {
+                    alert('Failed to activate the service provider.');
+                }
+            })
+            .catch(error => {
+                console.error('Error activating service provider:', error);
+                alert('An error occurred while activating the service provider.');
+            });
+        }
+
+        function deactivateServiceProvider(providerId) {
+            // Send an AJAX request to your server to deactivate the provider's account
+            fetch(`/deactivate_service_provider/${providerId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update the UI, e.g., change the button to Activate
+                    alert('Service provider deactivated successfully.');
+                    // Optionally, you can reload the list of all providers
+                    // window.location.reload();
+                } else {
+                    alert('Failed to deactivate the service provider.');
+                }
+            })
+            .catch(error => {
+                console.error('Error deactivating service provider:', error);
+                alert('An error occurred while deactivating the service provider.');
+            });
+        }
+
+        function logout() {
+            // Redirect to the home page or your logout endpoint
+            window.location.href = '/admin_logout';
+        }
+function generateReport() {
+            const startDate = document.getElementById('start-date').value;
+            const endDate = document.getElementById('end-date').value;
+
+            fetch(`/get_requests_by_date?start_date=${startDate}&end_date=${endDate}`)
+                .then(response => response.json())
+                .then(data => {
+                    generateReportBySR(data);
+                })
+                .catch(error => {
+                    console.error('Error fetching report:', error);
+                    alert('An error occurred while fetching the report.');
+                });
+        }
+
+
+
+         function generateReportBySR(data) {
+          
+            const tableBody = document.getElementById('reportBody');
+
+            if (tableBody) {
+                tableBody.innerHTML = ''; // Clear existing content
+
+                // Iterate over data and display in DataTable
+                data.forEach(request => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `<td>${request.id}</td><td>${request.user_id}</td><td>${request.confirmed_service_provider_id}</td><td>${request.location}</td><td>${request.help_type}</td><td>${request.status}</td><td><span class="view-button" onclick="viewRequest(${request.user_id}, ${request.confirmed_service_provider_id})">View</span></td>`;
+                    tableBody.appendChild(row);
+                });
+
+                // Initialize DataTable
+                $('#reportTable').DataTable();
+            } else {
+                console.error('Table body not found.');
+            }
+        }
+        
+
+
+
+
+
+        async function viewRequest(userId, providerId) {
+            try {
+                // Fetch service provider details using providerId
+                const serviceProviderDetails = await getServiceProviderDetails(providerId);
+
+                // Fetch user details using userId
+                const userDetails = await getUserDetails(userId);
+
+                // Display the details in the popup
+                const popupContent = document.getElementById('popupContent');
+                if (popupContent) {
+                    popupContent.innerHTML = `
+                        <h3>Request Details</h3>
+                        <h4>User Details</h4>
+                        <p>User ID: ${userDetails.id}</p>
+                        <p>User Name: ${userDetails.username}</p>
+                        <p>User Email: ${userDetails.email}</p>
+                        <p>Full Name: ${userDetails.full_name}</p>
+                        <p>Phone Number : ${userDetails.phone_number}</p>
+
+                        <h4>Service Provider Details</h4>
+                        <p>Service Provider ID: ${serviceProviderDetails.id}</p>
+                        <p>Provider's UserName: ${serviceProviderDetails.user_name}</p>
+                        <p>Provider Email: ${serviceProviderDetails.email}</p>
+                        <p>Provider Type: ${serviceProviderDetails.provider_type}</p>
+                        <p>Provider Location: ${serviceProviderDetails.location}</p>
+                        <p>Contact Number : ${serviceProviderDetails.contact_number}</p>
+                        <p>Account Active Status : ${serviceProviderDetails.status}</p>
+                        <p>Provider Rating : ${serviceProviderDetails.rating_points}</p>
+                    `;
+                }
+
+                // Show the popup
+                const popup = document.getElementById('popup');
+                if (popup) {
+                    popup.style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Error fetching and displaying details:', error);
+                // Handle errors if necessary
+            }
+        }
+
+        function closePopup() {
+            // Hide the popup
+            document.getElementById('popup').style.display = 'none';
+        }
+
+        // Mock function to fetch request details (replace with your actual implementation)
+        function getRequestDetails(userId, providerId) {
+            // Make an API request to fetch detailed request information based on userId and providerId
+            // For demonstration purposes, return mock data
+            return { mock: 'request details' };
+        }
+
+
+        async function getServiceProviderDetails(providerId) {
+        try {
+            const response = await fetch(`/get_service_provider_details/${providerId}`);
+            const data = await response.json();
+            console.log(data)
+            return data;
+        } catch (error) {
+            console.error('Error fetching service provider details:', error);
+            return { error: 'Error fetching service provider details' };
+        }
+    }
+
+    // Function to fetch user details using userId
+    async function getUserDetails(userId) {
+        try {
+            const response = await fetch(`/get_user_details/${userId}`);
+            const data = await response.json();
+            console.log(data)
+            return data;
+        } catch (error) {
+            console.error('Error fetching user details:', error);
+            return { error: 'Error fetching user details' };
+        }
+    }
+function printReport() {
+        console.log('Printing report...');
+
+        // Create a new jsPDF instance
+        const pdf = new jsPDF();
+
+        // Add content from the DataTable to the PDF
+        pdf.autoTable({ html: '#reportTable' });
+
+        // Save or open the PDF
+        pdf.save('report.pdf');
+
+        console.log('Report printed.');
+    }
+     // DataTable initialization
+      $(document).ready(function () {
+    // Log the data to ensure it's present
+    console.log('Data:', $('#reportTable').html());
+
+    // DataTable initialization
+    $('#reportTable').DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+            'print'
+        ]
+    });
+});
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Emergency Services System</title>
+    <style>
+        /* Reset some default styles */
+        body, h1, h2, h3, p {
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Define basic styling */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            margin-top: 50px;
+        }
+
+        /* Header styles */
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #3498db;
+        }
+
+        /* Form styles */
+        form {
+            margin-top: 20px;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+            text-align: left;
+            color: #555;
+            transition: background 0.3s ease;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        input[type="email"],
+        input[type="tel"],
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        input[type="file"] {
+            margin-top: 10px;
+        }
+
+        input[type="submit"],
+        button {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: #fff;
+            border: none;
+            padding: 12px 24px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        input[type="submit"]:hover,
+        button:hover {
+            background: linear-gradient(135deg, #2c3e50, #1f2b38);
+        }
+
+        /* Radio button styles */
+        #registrationType {
+            margin-bottom: 20px;
+        }
+
+        input[type="radio"] {
+            display: none;
+        }
+
+        label.selected {
+            background-color: #3498db;
+            color: #fff;
+        }
+
+        label {
+            font-weight: bold;
+            display: inline-block;
+            margin-right: 5px;
+            margin-bottom: 10px;
+            text-align: left;
+            cursor: pointer;
+            padding: 10px;
+            border: 1px solid #3498db;
+            border-radius: 5px;
+            color: #3498db;
+        }
+
+        label:hover {
+            background: #3498db;
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>Register</h1>
+        </header>
+        <div id="registrationType">
+            <p>Register as:</p>
+            <input type="radio" id="user" name="registrationType" value="user" checked>
+            <label for="user">User</label>
+            <input type="radio" id="serviceProvider" name="registrationType" value="service_provider">
+            <label for="serviceProvider">Service Provider</label>
+        </div>
+
+        <form id="userRegistration" action="/register" method="post" enctype="multipart/form-data">
+            <!-- User registration fields -->
+            <input type="hidden" name="registrationType" value="user">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" required>
+
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+
+            <label for="fullName">Full Name</label>
+            <input type="text" id="fullName" name="fullName" required>
+
+            <label for="phoneNumber">Phone Number</label>
+            <input type="tel" id="phoneNumber" name="phoneNumber" required>
+
+            <label for="profilePic">Profile Picture</label>
+            <input type="file" id="profilePic" name="profilePic" accept="image/*" required>
+
+            <input type="submit" value="Register">
+        </form>
+
+        <form id="serviceProviderRegistration" action="/register" method="post" enctype="multipart/form-data"
+            style="display: none;">
+            <!-- Service Provider registration fields -->
+            <input type="hidden" name="registrationType" value="service_provider">
+            <label for="providerType">Service Provider Type</label>
+            <select id="providerType" name="providerType" required>
+                <option value="doctor">Doctor</option>
+                <option value="mechanic">Mechanic</option>
+                <option value="fuel_provider">Fuel Provider</option>
+                <!-- Add more service provider types as needed -->
+            </select>
+
+            <label for="userName">Username</label>
+            <input type="text" id="userName" name="userName" required>
+
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="contactNumber">Contact Number</label>
+            <input type="tel" id="contactNumber" name="contactNumber" required>
+
+            <label for="license">License Document (PDF)</label>
+            <input type="file" id="license" name="license" accept=".pdf" required><br>
+
+            <label for="location">Location</label>
+            <input type="text" id="location" name="location" required>  
+            <button type="button" id="uploadLocation">Upload Current Location</button><br>
+
+            <label for="profilePic">Profile Picture</label><br>
+            <input type="file" id="profilePic" name="profilePic" accept="image/*" required><br>
+
+            <input type="submit" value="Register">
+        </form>
+
+        <footer>
+            <p>&copy; 2023 Emergency Services System</p>
+        </footer>
+
+        <script>
+            const registrationType = document.querySelector("#registrationType");
+            const userRadio = document.querySelector("#user");
+            const serviceProviderRadio = document.querySelector("#serviceProvider");
+            const userRegistration = document.querySelector("#userRegistration");
+            const serviceProviderRegistration = document.querySelector("#serviceProviderRegistration");
+            const userLabel = document.querySelector("label[for=user]");
+            const serviceProviderLabel = document.querySelector("label[for=serviceProvider]");
+
+            registrationType.addEventListener("change", () => {
+                if (userRadio.checked) {
+                    userRegistration.style.display = "block";
+                    serviceProviderRegistration.style.display = "none";
+                    userRadio.value = "user";
+                    serviceProviderRadio.value = "";
+                    serviceProviderLabel.classList.remove("selected");
+                    userLabel.classList.add("selected");
+                } else {
+                    userRegistration.style.display = "none";
+                    serviceProviderRegistration.style.display = "block";
+                    userRadio.value = "";
+                    serviceProviderRadio.value = "service_provider";
+                    userLabel.classList.remove("selected");
+                    serviceProviderLabel.classList.add("selected");
+                }
+            });
+
+            // JavaScript to capture and upload the user's current location
+            const uploadLocationButton = document.querySelector("#uploadLocation");
+
+            uploadLocationButton.addEventListener("click", () => {
+                if ("geolocation" in navigator) {
+                    navigator.geolocation.getCurrentPosition((position) => {
+                        const latitude = position.coords.latitude;
+                        const longitude = position.coords.longitude;
+                        const locationInput = document.querySelector("#location");
+                        locationInput.value = `Latitude: ${latitude}, Longitude: ${longitude}`;
+                    });
+                } else {
+                    alert("Geolocation is not available in your browser.");
+                }
+            });
+        </script>
+    </div>
+</body>
+
+</html>

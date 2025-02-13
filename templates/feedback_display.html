@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feedback Display - Emergency Services System</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            overflow-y: auto; /* Enable vertical scrollbar */
+            max-height: 500px; /* Set maximum height for scrollability */
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #333;
+            text-align: center;
+        }
+
+        .feedback {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .feedback p {
+            margin: 10px 0;
+        }
+
+        .feedback p strong {
+            margin-right: 10px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        a {
+            text-decoration: none;
+            background-color: #3498db;
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: inline-block;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+
+        a:hover {
+            background-color: #2684f5;
+        }
+
+        .back-button {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Feedback Display</h1>
+
+        {% for feedback in feedback_list %}
+        <div class="feedback">
+            <p><strong>User ID:</strong> {{ feedback[3] }}</p>
+            <p><strong>Service Provider ID:</strong> {{ feedback[2] }}</p>
+            <p><strong>Request ID:</strong> {{ feedback[1] }}</p>
+            <p><strong>Rating:</strong> {{ feedback[4] }}</p>
+            <p><strong>Comments:</strong> {{ feedback[5] }}</p>
+        </div>
+        {% endfor %}
+
+    </div>
+    <div class="back-button">
+        <a href="/service_provider_dashboard">Back to Service Provider Dashboard</a>
+    </div>
+</body>
+
+</html>

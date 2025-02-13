@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Service Provider Dashboard</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #3498db;
+            margin-top: 0;
+        }
+
+           
+           
+           
+      
+        .profile {
+            margin: 20px;
+        }
+
+        .profile img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .profile h2 {
+            margin: 10px 0;
+            color: #333;
+            font-size: 1.8rem;
+        }
+
+        .profile p {
+            margin: 5px 0;
+            color: #777;
+            font-size: 1rem;
+        }
+
+        .buttons {
+            margin-top: 20px;
+        }
+
+        .edit-profile-button,
+        .watch-requests-button,
+        .view-feedbacks-button,
+        .logout-button a {
+            display: inline-block;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            margin: 0 10px;
+        }
+
+        .edit-profile-button {
+            background-color: #3498db;
+            color: #fff;
+        }
+
+        .edit-profile-button:hover {
+            background-color: #2980b9;
+        }
+
+        .watch-requests-button {
+            background-color: #2ecc71;
+            color: white;
+        }
+
+        .watch-requests-button:hover {
+            background-color: #27ae60;
+        }
+
+        .view-feedbacks-button {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .view-feedbacks-button:hover {
+            background-color: #c0392b;
+        }
+
+        .logout-button a {
+            background: linear-gradient(135deg, #e74c3c, #d63022);
+            color: #fff;
+        }
+
+        .logout-button a:hover {
+            background-color: #c0392b;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #e74c3c;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease-in-out;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .notification.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .notification:hover {
+            background-color: #c0392b;
+        }
+        #sr{
+            color:red;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Service Provider Dashboard</h1>
+        <div class="profile">
+            <img src="data:image/jpg;base64,{{ encoded_image }}" alt="Service Provider Profile Picture">
+            <h2>{{ service_provider['user_name'] }}</h2>
+            <p>Provider Type: {{ service_provider['provider_type'] }}</p>
+            <p>Email: {{ service_provider['email'] }}</p>
+            <p>Contact Number: {{ service_provider['contact_number'] }}</p>
+            <p>Location: {{ service_provider['location'] }}</p>
+        </div>
+        <div class="buttons">
+            <button class="edit-profile-button" onclick="editProfile()">Edit Profile</button>
+            <button class="view-feedbacks-button" onclick="viewFeedbacks()">View Feedbacks</button>
+            <div class="logout-button">
+                <a href="/logout">Logout</a>
+            </div>
+             {% if service_provider['status'] %}
+            <button class="watch-requests-button" onclick="watchRequests()">Watch Emergency Requests</button>
+            {%else %}
+            <p id=sr>Your account is deactivated so You can't receive any request</p>
+
+            {% endif %}
+        </div>
+    </div>
+
+    {% if service_provider['has_notification'] %}
+    <div class="notification show" onclick=watchNotification({{service_provider['sender_user_id']}})>
+        <p>You have a new notification!</p>
+    </div>
+    {% endif %}
+
+    <script>
+        function editProfile() {
+
+            window.location.href = '/serviceprovider_editprofile/' + "{{ service_provider['id'] }}";
+            
+        }
+
+        function viewFeedbacks() {
+            window.location.href = '/feedback_display/' + "{{ service_provider['id'] }}";
+        }
+
+        function watchRequests() {
+            window.location.href = '/view_requests/' + "{{ service_provider['provider_type'] }}" +'/'+  "{{ service_provider['id'] }}";
+        }
+
+        function watchNotification(userId) {
+            window.location.href = '/user_details/' + userId;
+        }
+    </script>
+  
+</body>
+
+</html>

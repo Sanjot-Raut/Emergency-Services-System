@@ -1,0 +1,24 @@
+# Ignore virtual environments
+myenv/
+ENV/
+
+# Ignore compiled Python files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore node modules
+node_modules/
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore environment variables
+.env
+.venv
+
+# Ignore temp files
+tempCodeRunnerFile.py
+ 
